@@ -1,4 +1,5 @@
 #include "raylib/raylib.h"
+
 #ifdef __APPLE__
 
 #include <CoreFoundation/CoreFoundation.h> // wow apple has a fucking c library WWWWOOOOOOWWWW
