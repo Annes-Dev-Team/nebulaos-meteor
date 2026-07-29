@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <raylib/raylib.h>
 #include <stdio.h>
 #include "bundle.h"
@@ -12,9 +13,12 @@ int main() {
     init_bundle();
     HideCursor();
 
+    load_fs();
+
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
+        DrawText(Folder_get_absolute_path(get_folder_by_path("/poopy")), 0, 0, 20, BLACK);
         draw_cursor();
         EndDrawing();
     }

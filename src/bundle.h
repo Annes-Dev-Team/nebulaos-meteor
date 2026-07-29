@@ -13,3 +13,4 @@ extern Texture2D bundle_imgfile;
 extern Texture2D bundle_soundfile;
 
 void init_bundle(void);
+const char *get_save_path(void);

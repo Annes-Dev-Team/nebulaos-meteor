@@ -7,6 +7,7 @@
 #include <CoreFoundation/CoreFoundation.h> // wow apple has a fucking c library WWWWOOOOOOWWWW
 #include <limits.h>
 #include <stdio.h>
+#include <sys/stat.h>
 
 const char* get_resource(const char* resource) {
     static char path[PATH_MAX];
@@ -33,6 +34,21 @@ const char* get_resource(const char* resource) {
     return path;
 }
 
+const char *get_save_path(void) {
+    static char path[1024];
+
+    const char *home = getenv("HOME");
+    snprintf(path, sizeof(path),
+             "%s/Library/Application Support/NebMeteor",
+             home);
+
+    // Create the directory if it doesn't exist.
+    mkdir(path, 0755);
+
+    strcat(path, "/filesystem.json");
+    return path;
+}
+
 #else 
 
 const char* get_resource(const char *resource)
@@ -40,6 +56,10 @@ const char* get_resource(const char *resource)
     return TextFormat("%s%s",
                       GetApplicationDirectory(),
                       resource);
+}
+
+const char *get_save_path(void) {
+    return "filesystem.json";
 }
 
 #endif

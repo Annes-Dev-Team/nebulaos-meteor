@@ -9,7 +9,7 @@ typedef struct Folder {
 } Folder;
 
 const char* Folder_get_absolute_path(Folder* folder);
-void Folder_add(Folder* file);
+void Folder_add(Folder* folder);
 Folder* get_folder_by_path(const char* path);
 
 typedef struct {
@@ -28,3 +28,6 @@ extern File** files;
 
 extern size_t folder_count;
 extern size_t file_count;
+
+void save_fs(void);
+void load_fs(void);
