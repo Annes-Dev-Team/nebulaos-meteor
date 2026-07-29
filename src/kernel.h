@@ -1,4 +1,6 @@
+#include <stddef.h>
 
+void kernel_init();
 
 typedef struct Folder Folder;
 typedef struct Folder {
@@ -7,6 +9,8 @@ typedef struct Folder {
 } Folder;
 
 const char* Folder_get_absolute_path(Folder* folder);
+void Folder_add(Folder* file);
+Folder* get_folder_by_path(const char* path);
 
 typedef struct {
     char* name;
@@ -16,3 +20,11 @@ typedef struct {
 } File;
 
 const char* File_get_absolute_path(File* file);
+void File_add(File* file);
+File* get_file_by_path(const char* path);
+
+extern Folder** folders;
+extern File** files;
+
+extern size_t folder_count;
+extern size_t file_count;

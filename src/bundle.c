@@ -1,4 +1,6 @@
 #include "raylib/raylib.h"
+#define RAYGUI_IMPLEMENTATION
+#include <raylib/raygui.h>
 
 #ifdef __APPLE__
 
