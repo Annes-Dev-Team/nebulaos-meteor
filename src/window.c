@@ -1,5 +1,6 @@
 #include "window.h"
 #include "raylib/raylib.h"
+#include <raylib/raygui.h>
 
 void Window_draw(Window* win) {
     BeginTextureMode(win->fb);
@@ -13,12 +14,15 @@ void Window_draw(Window* win) {
         0, 0, win->w, -win->h
     };
     DrawTextureRec(win->fb.texture, src, (Vector2){win->x, win->y}, WHITE);
+    GuiButton((Rectangle){win->x + win->w - 40, win->y - 40, 50, 40}, "x");
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         // resizing
-        if (CheckCollisionPointCircle(GetMousePosition(), (Vector2){win->x + win->w + 10, win->y + win->h + 10}, 15)) {
-            win->w += GetMouseDelta().x;
-            win->h += GetMouseDelta().y;
+        if (win->allow_resizing) {
+            if (CheckCollisionPointCircle(GetMousePosition(), (Vector2){win->x + win->w + 10, win->y + win->h + 10}, 15)) {
+                win->w += GetMouseDelta().x;
+                win->h += GetMouseDelta().y;
+            }
         }
         // moving
         if (CheckCollisionPointRec(GetMousePosition(), (Rectangle){win->x - 10, win->y - 40, win->w + 20, 40,})) {
