@@ -3,6 +3,7 @@
 #include "bundle.h"
 #include <stdbool.h>
 #include <stdlib.h>
+#include "config.h"
 
 bool showmenu = 0;
 Vector2 savedmousepos;
@@ -14,7 +15,7 @@ void draw_cursor() {
             exit(0);
        }
     }
-    DrawTextureEx(bundle_cursor, GetMousePosition(), 0, 0.4, WHITE);
+    DrawTextureEx(bundle_cursor, GetMousePosition(), 0, IsMouseButtonDown(MOUSE_BUTTON_LEFT) ? cursize - 0.05 : cursize, WHITE);
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
         savedmousepos = GetMousePosition();
         showmenu = !showmenu;
