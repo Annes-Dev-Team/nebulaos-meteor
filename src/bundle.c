@@ -63,6 +63,7 @@ const char *get_save_path(void) {
 }
 
 #endif
+#include <time.h>
 
 Texture2D bundle_logo;
 Texture2D bundle_arrow;
@@ -75,8 +76,17 @@ Texture2D bundle_imgfile;
 Texture2D bundle_soundfile;
 
 void init_bundle(void) {
+    time_t raw_time;
+    time(&raw_time);
+    struct tm *local_time = localtime(&raw_time);
+    unsigned char current_month = local_time->tm_mon + 1;
+
     bundle_arrow = LoadTexture(get_resource("arrow.png"));
-    bundle_logo = LoadTexture(get_resource("logo.png"));
+    if (current_month == 6) { // June
+        bundle_logo = LoadTexture(get_resource("pride.png"));
+    } else {
+        bundle_logo = LoadTexture(get_resource("logo.png"));
+    }
     bundle_cursor = LoadTexture(get_resource("cursor.png"));
     bundle_curhover = LoadTexture(get_resource("arrow.png"));
     bundle_toby = LoadTexture(get_resource("arrow.png"));

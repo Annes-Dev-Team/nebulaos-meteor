@@ -2,11 +2,12 @@
 #include "raylib/raylib.h"
 #include <raylib/raygui.h>
 
+void _dummy(Window* win) {}
+
 void Window_draw(Window* win) {
-    BeginTextureMode(win->fb);
-    DrawLine(win->fb.texture.width, 0, win->fb.texture.width, win->fb.texture.height, BLACK);
-    DrawLine(0, win->fb.texture.height, win->fb.texture.width, win->fb.texture.height, BLACK);
-    EndTextureMode();
+    if (!win->isopen || !win->draw_call) {
+        return;
+    }
 
     DrawRectangle(win->x - 10, win->y, win->w + 20, win->h + 10, GRAY);
     DrawRectangle(win->x - 10, win->y - 40, win->w + 20, 40, LIGHTGRAY);
@@ -14,7 +15,10 @@ void Window_draw(Window* win) {
         0, 0, win->w, -win->h
     };
     DrawTextureRec(win->fb.texture, src, (Vector2){win->x, win->y}, WHITE);
-    GuiButton((Rectangle){win->x + win->w - 40, win->y - 40, 50, 40}, "x");
+
+    if (GuiButton((Rectangle){win->x + win->w - 40, win->y - 40, 50, 40}, "x")) { // close button
+        win->isopen = false;
+    }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         // resizing
@@ -30,4 +34,11 @@ void Window_draw(Window* win) {
             win->y += GetMouseDelta().y;
         }
     }
+
+    win->draw_call(win);
+
+    BeginTextureMode(win->fb);
+    DrawLine(win->fb.texture.width, 0, win->fb.texture.width, win->fb.texture.height, BLACK);
+    DrawLine(0, win->fb.texture.height, win->fb.texture.width, win->fb.texture.height, BLACK);
+    EndTextureMode();
 }

@@ -24,8 +24,8 @@ int main() {
         ClearBackground(RAYWHITE);
 
         DrawText(Folder_get_absolute_path(get_folder_by_path("/poopy")), 0, 0, 20, BLACK);
-        draw_settings();
 
+        Window_draw(&settingswindow);
         draw_cursor();
         EndDrawing();
     }

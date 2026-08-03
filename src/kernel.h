@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdint.h>
 
 void kernel_init();
 
@@ -16,6 +17,7 @@ typedef struct {
     char* name;
     char* ext;
     char* contents;
+    uint32_t size;
     Folder* parent;
 } File;
 
