@@ -19,14 +19,8 @@ static uint32_t read_u32(Program *program) // reads in big endian
 
 void Program_init(Program *program) {
     memset(program, 0, sizeof(Program));
-    
-    program->regs[REG_WINDOW_HEIGHT] = malloc(sizeof(int));
-    program->regs[REG_WINDOW_FPS] = malloc(sizeof(int));
-    program->regs[REG_WINDOW_WIDTH] = malloc(sizeof(int));
 
     program->regs[REG_NEBOS_VERSION] = NEB_VERSION;
-
-    program->regs[REG_WINDOW_RESIZABLE] = malloc(sizeof(bool));
 }
 
 bool Program_step(Program *program) {
@@ -89,6 +83,19 @@ bool Program_step(Program *program) {
             program->regs[val3] = (void*)ptr_value;
             break;
         }
+
+        case OP_OSFLAG: // OSF FLAG VALUE
+            break;
+        
+        case OP_PUTPIXEL: // PPX X Y
+            break;
+        
+        case OP_RECTANGLE: // REC X Y W H
+            break;
+        
+        case OP_CIRCLE: // CIC X Y RAD
+            break;
+            
         default:
             printf("Invalid instruction: %u\n", opcode);
             return false;

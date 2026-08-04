@@ -2,6 +2,8 @@
 #include "window.h"
 #include <stdint.h>
 
+#pragma once
+
 #define REG_COUNT 4096
 
 typedef enum {
@@ -13,13 +15,6 @@ typedef enum {
     REG_ARG5,
     REG_ARG6,
     REG_ARG7,
-
-    REG_WINDOW_WIDTH,
-    REG_WINDOW_HEIGHT,
-    REG_WINDOW_FPS,
-    REG_WINDOW_RESIZABLE,
-    REG_WINDOW_OPEN,
-    REG_WINDOW_DECORATED,
 
     REG_NEBOS_VERSION,
 
@@ -34,8 +29,26 @@ typedef enum {
     OP_ALLOC,
     OP_FREE,
     OP_MOVI,
-    OP_MOVP
+    OP_MOVP,
+
+    OP_OSFLAG,
+
+    OP_PUTPIXEL,
+    OP_RECTANGLE,
+    OP_CIRCLE,
+
+    OP_READFILE,
+    OP_SETARRAYINDEX
 } Opcodes;
+
+typedef enum {
+    FLAG_WINOPEN = 0,
+    FLAG_WINW,
+    FLAG_WINH,
+    FLAG_WINX,
+    FLAG_WINY,
+    FLAG_WINDEC
+} OSFlags;
 
 typedef struct {
     const uint8_t* rom;
