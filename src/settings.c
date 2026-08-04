@@ -15,5 +15,22 @@ void draw_settings(Window* win) {
     ClearBackground(RAYWHITE);
     EndTextureMode();
 
-    GuiSlider((Rectangle){win->x + 100, win->y, 100, 50}, "Cursor Size", "", &cursize, 0.2, 1);
+    GuiSlider((Rectangle){win->x + 100, win->y, 100, 50}, "Cursor Size", TextFormat("%f", cursize), &cursize, 0.2, 1);
+    
+    static float fps_slider = 60.0f;
+
+    GuiSlider(
+        (Rectangle){win->x + 100, win->y + 60, 100, 50},
+        "FPS",
+        TextFormat("%.0f", fps_slider),
+        &fps_slider,
+        5,
+        120
+    );
+
+    fps = (int)fps_slider;
+
+    if (fps != GetFPS()) {
+        SetTargetFPS(fps);
+    }
 }

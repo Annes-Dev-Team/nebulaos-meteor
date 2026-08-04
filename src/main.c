@@ -24,10 +24,39 @@ int main() {
     load_fs();
 
     uint8_t rom[] = {
-        OP_MOV,
-        0x00, 0x00, 0x00, REG_FIRST_GENERAL,   // RFIRST
-        0x00, 0x00, 0x00, 0x01,   // R1
 
+        // ALLOC 4, R15
+        // Allocate 4 bytes for an int
+        OP_ALLOC,
+        0x00, 0x00, 0x00, 0x04,   // size = 4
+        0x00, 0x00, 0x00, 0x0F,   // R15
+
+
+        // MOVI 42, R15
+        // *R15 = 42
+        OP_MOVI,
+        0x00, 0x00, 0x00, 0x2A,   // value = 42
+        0x00, 0x00, 0x00, 0x0F,   // R15
+
+
+        // MOV R15, R1
+        // R1 now points to the same memory
+        OP_MOV,
+        0x00, 0x00, 0x00, 0x0F,   // source R15
+        0x00, 0x00, 0x00, 0x01,   // destination R1
+
+
+        // FREE R15
+        OP_FREE,
+        0x00, 0x00, 0x00, 0x0F,   // R15
+        0x00, 0x00, 0x00, 0x00,
+
+        OP_MOVP,
+        0x00, 0x00, 0x00, 0x00,   // 0
+        0x00, 0x00, 0x00, 0x00,   // 0
+        0x00, 0x00, 0x00, 0x0F,   // R15
+
+        // NOP
         OP_NOP,
         0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00
@@ -38,8 +67,6 @@ int main() {
 
     prg.rom = rom;
     prg.rom_size = sizeof(rom);
-
-    prg.regs[REG_FIRST_GENERAL] = malloc(sizeof(int));
 
     settingswindow.x = 500;
 

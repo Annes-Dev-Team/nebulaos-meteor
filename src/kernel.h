@@ -16,7 +16,7 @@ Folder* get_folder_by_path(const char* path);
 typedef struct {
     char* name;
     char* ext;
-    char* contents;
+    unsigned char* contents;
     uint32_t size;
     Folder* parent;
 } File;
