@@ -13,6 +13,7 @@ typedef struct Window {
 
     bool isopen;
     bool allow_resizing;
+    bool decorated;
 
     void (*draw_call)(Window*);
 } Window;

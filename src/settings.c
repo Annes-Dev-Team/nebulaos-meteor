@@ -4,7 +4,7 @@
 #include "config.h"
 #include "settings.h"
 
-Window settingswindow = {100, 100, 300, 500, .allow_resizing=false, .isopen=true, .draw_call=draw_settings};
+Window settingswindow = {100, 100, 300, 500, .allow_resizing=false, .isopen=true, .draw_call=draw_settings, .decorated=true};
 
 void init_settings() {
     settingswindow.fb = LoadRenderTexture(300, 500);

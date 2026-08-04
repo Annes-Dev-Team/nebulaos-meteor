@@ -9,16 +9,20 @@ void Window_draw(Window* win) {
         return;
     }
 
-    DrawRectangle(win->x - 10, win->y, win->w + 20, win->h + 10, GRAY);
-    DrawRectangle(win->x - 10, win->y - 40, win->w + 20, 40, LIGHTGRAY);
+    if (win->decorated) {
+        DrawRectangle(win->x - 10, win->y, win->w + 20, win->h + 10, GRAY); // frame
+        DrawRectangle(win->x - 10, win->y - 40, win->w + 20, 40, LIGHTGRAY); // top
+
+
+        if (GuiButton((Rectangle){win->x + win->w - 40, win->y - 40, 50, 40}, "x")) { // close button
+            win->isopen = false;
+        }
+    }
+
     Rectangle src = {
         0, 0, win->w, -win->h
     };
     DrawTextureRec(win->fb.texture, src, (Vector2){win->x, win->y}, WHITE);
-
-    if (GuiButton((Rectangle){win->x + win->w - 40, win->y - 40, 50, 40}, "x")) { // close button
-        win->isopen = false;
-    }
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         // resizing
