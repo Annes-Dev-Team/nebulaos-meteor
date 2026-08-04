@@ -29,7 +29,12 @@ typedef enum {
 typedef enum {
     OP_NOP = 0,
     OP_MOV,
-    OP_JMP
+    OP_JMP,
+
+    OP_ALLOC,
+    OP_FREE,
+    OP_MOVI,
+    OP_MOVP
 } Opcodes;
 
 typedef struct {
@@ -40,4 +45,5 @@ typedef struct {
     Window win;
 } Program;
 
+void Program_init(Program *program);
 bool Program_step(Program* program);

@@ -39,6 +39,10 @@ bool Program_step(Program *program) {
     uint32_t val1 = read_u32(program);
     uint32_t val2 = read_u32(program);
 
+    printf("OPCODE: %u\n", opcode);
+    printf("VAL1: %u\n", val1);
+    printf("VAL2: %u\n", val2);
+
     switch (opcode) {
         
         case OP_NOP:
@@ -48,8 +52,7 @@ bool Program_step(Program *program) {
             program->pc = val1;
             break;
 
-        case OP_MOV: { // MOV SRC DEST
-
+        case OP_MOV: { // MOV SRCREG DSTREG
             if (val1 >= REG_COUNT || val2 >= REG_COUNT) {
                 printf("Invalid register index.\n");
                 return false;
@@ -59,6 +62,33 @@ bool Program_step(Program *program) {
             break;
         }
 
+        case OP_ALLOC: // ALC SZE REG
+            program->regs[val2] = malloc(val1);
+            break;
+        
+        case OP_FREE: // FRE REG
+            if (val1 < REG_FIRST_GENERAL) {
+                printf("Cannot free Register %p as it is a system register\n", val1);
+                return false;
+            }
+            free(program->regs[val1]);
+            break;
+        
+        case OP_MOVI: // MOVI NUM REG
+            *(int*)program->regs[val2] = val1;
+            break;
+
+        case OP_MOVP: { // MOVP PTRVALHGH PTRVALLOW REG
+
+            uint32_t val3 = read_u32(program);
+
+            uint64_t ptr_value =
+                ((uint64_t)val1 << 32) |
+                (uint64_t)val2;
+
+            program->regs[val3] = (void*)ptr_value;
+            break;
+        }
         default:
             printf("Invalid instruction: %u\n", opcode);
             return false;
