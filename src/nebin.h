@@ -33,6 +33,8 @@ typedef enum {
 
     OP_OSFLAG,
 
+    OP_INITBUF,
+
     OP_PUTPIXEL,
     OP_RECTANGLE,
     OP_CIRCLE,

@@ -1,5 +1,6 @@
 #include "nebin.h"
 #include "config.h"
+#include "raylib/raylib.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
@@ -85,17 +86,79 @@ bool Program_step(Program *program) {
         }
 
         case OP_OSFLAG: // OSF FLAG VALUE
+            switch (val1) {
+                case FLAG_WINOPEN:
+                    program->win.isopen = val2;
+                    break;
+
+                case FLAG_WINW:
+                    program->win.w = val2;
+                    break;
+                
+                case FLAG_WINH:
+                    program->win.h = val2;
+                    break;
+                
+                case FLAG_WINX:
+                    program->win.x = val2;
+                    break;
+                
+                case FLAG_WINY:
+                    program->win.y = val2;
+                    break;
+                
+                case FLAG_WINDEC:
+                    program->win.decorated = val2;
+                    break;
+
+            }
             break;
         
-        case OP_PUTPIXEL: // PPX X Y
+        case OP_INITBUF:
+            program->win.fb = LoadRenderTexture(val1, val2);
             break;
+
+        case OP_PUTPIXEL: { // PPX X Y R G B A
+            uint32_t r = read_u32(program);
+            uint32_t g = read_u32(program);
+            uint32_t b = read_u32(program);
+            uint32_t a = read_u32(program);
+
+            BeginTextureMode(program->win.fb);
+            DrawPixel(val1, val2, (Color){r,g,b, a});
+            EndTextureMode();
+            break;
+        }
         
-        case OP_RECTANGLE: // REC X Y W H
+        case OP_RECTANGLE: { // REC X Y W H R G B A
+            uint32_t w = read_u32(program);
+            uint32_t h = read_u32(program);
+
+            uint32_t r = read_u32(program);
+            uint32_t g = read_u32(program);
+            uint32_t b = read_u32(program);
+            uint32_t a = read_u32(program);
+
+            BeginTextureMode(program->win.fb);
+            DrawRectangle(val1, val2, w, h, (Color){r,g,b,a});
+            EndTextureMode();
             break;
-        
-        case OP_CIRCLE: // CIC X Y RAD
+        }
+
+        case OP_CIRCLE: {// CIC X Y RAD R G B A
+            uint32_t rad = read_u32(program);
+
+            uint32_t r = read_u32(program);
+            uint32_t g = read_u32(program);
+            uint32_t b = read_u32(program);
+            uint32_t a = read_u32(program);
+
+            BeginTextureMode(program->win.fb);
+            DrawCircle(val1, val2, rad, (Color){r,g,b, a});
+            EndTextureMode();
             break;
-            
+        }
+
         default:
             printf("Invalid instruction: %u\n", opcode);
             return false;

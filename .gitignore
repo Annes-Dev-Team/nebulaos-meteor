@@ -2,3 +2,4 @@
 NebulaOS Meteor.app
 .cache
 .DS_Store
+*.log

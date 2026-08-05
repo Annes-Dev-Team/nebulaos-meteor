@@ -9,4 +9,4 @@ build:
 	
 
 run: build
-	./NebulaOS\ Meteor.app/Contents/MacOS/nebmeteor
+	./NebulaOS\ Meteor.app/Contents/MacOS/nebmeteor | tee info.log
