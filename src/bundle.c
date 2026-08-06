@@ -5,9 +5,15 @@
 #ifdef __APPLE__
 
 #include <CoreFoundation/CoreFoundation.h> // wow apple has a fucking c library WWWWOOOOOOWWWW
+#include <CoreFoundation/CFBase.h>
+
 #include <limits.h>
 #include <stdio.h>
 #include <sys/stat.h>
+
+#include <objc/objc.h>
+#include <objc/runtime.h>
+#include <objc/message.h>
 
 const char* get_resource(const char* resource) {
     static char path[PATH_MAX];
@@ -47,6 +53,20 @@ const char *get_save_path(void) {
 
     strcat(path, "/filesystem.json");
     return path;
+}
+
+static void set_app_icon(id nsImage)
+{
+    Class NSApplication = (Class)objc_getClass("NSApplication");
+
+    id app = ((id (*)(Class, SEL))objc_msgSend)(
+        NSApplication,
+        sel_registerName("sharedApplication"));
+
+    ((void (*)(id, SEL, id))objc_msgSend)(
+        app,
+        sel_registerName("setApplicationIconImage:"),
+        nsImage);
 }
 
 #else 
@@ -97,3 +117,83 @@ void init_bundle(void) {
     
 }
 
+void set_window_icon(Image *image)
+{
+#ifdef __APPLE__
+    if (!image || !image->data) return;
+
+    // Convert to RGBA8 if necessary
+    Image rgba = *image;
+    if (rgba.format != PIXELFORMAT_UNCOMPRESSED_R8G8B8A8)
+        ImageFormat(&rgba, PIXELFORMAT_UNCOMPRESSED_R8G8B8A8);
+
+    Class NSBitmapImageRep = (Class)objc_getClass("NSBitmapImageRep");
+    Class NSImageClass     = (Class)objc_getClass("NSImage");
+    Class NSStringClass    = (Class)objc_getClass("NSString");
+
+    // NSString *colorSpace = @"NSCalibratedRGBColorSpace";
+    id colorSpace = ((id (*)(Class, SEL, const char *))objc_msgSend)(
+        NSStringClass,
+        sel_registerName("stringWithUTF8String:"),
+        "NSCalibratedRGBColorSpace");
+
+    // [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:...]
+    id bitmap = ((id (*)(id, SEL, void *,
+                         CFIndex, CFIndex,
+                         CFIndex, CFIndex,
+                         BOOL, BOOL,
+                         id,
+                         CFIndex, CFIndex))objc_msgSend)(
+        ((id (*)(Class, SEL))objc_msgSend)(
+            NSBitmapImageRep,
+            sel_registerName("alloc")),
+        sel_registerName("initWithBitmapDataPlanes:pixelsWide:pixelsHigh:bitsPerSample:samplesPerPixel:hasAlpha:isPlanar:colorSpaceName:bytesPerRow:bitsPerPixel:"),
+        NULL,
+        rgba.width,
+        rgba.height,
+        8,
+        4,
+        YES,
+        NO,
+        colorSpace,
+        rgba.width * 4,
+        32);
+
+    unsigned char *dst =
+        ((unsigned char *(*)(id, SEL))objc_msgSend)(
+            bitmap,
+            sel_registerName("bitmapData"));
+
+    memcpy(dst, rgba.data, rgba.width * rgba.height * 4);
+
+    typedef struct {
+        double width;
+        double height;
+    } NSSize;
+
+    NSSize size = { rgba.width, rgba.height };
+
+    id nsImage = ((id (*)(id, SEL, NSSize))objc_msgSend)(
+        ((id (*)(Class, SEL))objc_msgSend)(
+            NSImageClass,
+            sel_registerName("alloc")),
+        sel_registerName("initWithSize:"),
+        size);
+
+    ((void (*)(id, SEL, id))objc_msgSend)(
+        nsImage,
+        sel_registerName("addRepresentation:"),
+        bitmap);
+
+    set_app_icon(nsImage);
+
+    ((void (*)(id, SEL))objc_msgSend)(bitmap, sel_registerName("release"));
+    ((void (*)(id, SEL))objc_msgSend)(nsImage, sel_registerName("release"));
+
+    if (&rgba != image)
+        UnloadImage(rgba);
+
+#else
+    SetWindowIcon(*image);
+#endif
+}

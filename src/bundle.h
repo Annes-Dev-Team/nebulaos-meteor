@@ -14,3 +14,6 @@ extern Texture2D bundle_soundfile;
 
 void init_bundle(void);
 const char *get_save_path(void);
+
+// MacOS is known to not comply with the GLFW function that is why this function exists
+void set_window_icon(Image* image); 

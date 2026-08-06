@@ -94,6 +94,10 @@ int main() {
 
     settingswindow.x = 500;
 
+    Image poopy = LoadImageFromTexture(bundle_logo);
+    set_window_icon(&poopy);
+    //UnloadImage(poopy);
+
     while (!WindowShouldClose()) {
         if (Program_step(&prg)) {
             printf("PC: %u\n", prg.pc);
