@@ -49,14 +49,17 @@ typedef enum {
     FLAG_WINH,
     FLAG_WINX,
     FLAG_WINY,
-    FLAG_WINDEC
+    FLAG_WINDEC,
+
+    FLAG_WINRESIZE,
+    FLAG_WINTITLE
 } OSFlags;
 
 typedef struct {
     const uint8_t* rom;
     uint32_t rom_size;
     uint32_t pc; // its unlikely anyone will make a binary bigger than 4 gigs
-    void* regs[REG_COUNT]; // Regs 0-8 will be function arguments 8-12 will be window info 13 will be nebos version.
+    void* regs[REG_COUNT]; // Regs 0-7 will be function arguments 8 will be nebos version.
     Window win;
 } Program;
 

@@ -5,8 +5,8 @@ build:
 	cp assets/* NebulaOS\ Meteor.app/Contents/Resources
 
 	gcc src/*.c -lraylib -Iinclude -o NebulaOS\ Meteor.app/Contents/MacOS/nebmeteor \
-		-framework IOKit -framework Cocoa -framework CoreGraphics -framework CoreAudio
+		-framework IOKit -framework Cocoa -framework CoreGraphics -framework CoreAudio | tee compile.log
 	
 
 run: build
-	./NebulaOS\ Meteor.app/Contents/MacOS/nebmeteor | tee info.log
+	./NebulaOS\ Meteor.app/Contents/MacOS/nebmeteor | tee run.log

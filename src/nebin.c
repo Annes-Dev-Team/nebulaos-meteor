@@ -111,7 +111,16 @@ bool Program_step(Program *program) {
                     program->win.decorated = val2;
                     break;
 
+                case FLAG_WINRESIZE:
+                    program->win.allow_resizing = val2;
+                    break;
+                
+                case FLAG_WINTITLE: {
+                    program->win.title = program->regs[val2];
+                    break;
+                }
             }
+
             break;
         
         case OP_INITBUF:

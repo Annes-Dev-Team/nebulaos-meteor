@@ -35,6 +35,11 @@ int main() {
         0x00,0x00,0x00,FLAG_WINH,
         0x00,0x00,0x01,0xE0,
 
+        // OP_OSFLAG FLAG_WINTITLE NEBVERSION
+        OP_OSFLAG,
+        0x00,0x00,0x00,FLAG_WINTITLE,
+        0x00,0x00,0x00,REG_NEBOS_VERSION,
+
         // OP_INITBUF 640 480
         OP_INITBUF,
         0x00,0x00,0x02,0x80,
@@ -77,7 +82,6 @@ int main() {
     prg.win.isopen = true;
     prg.win.decorated = true;
     prg.win.allow_resizing=true;
-    prg.win.draw_call = _dummy;
 
     prg.win.x = 100;
     prg.win.y = 100;
