@@ -15,6 +15,8 @@ typedef struct Window {
     bool allow_resizing;
     bool decorated;
 
+    const char* title;
+
     void (*draw_call)(Window*);
 } Window;
 

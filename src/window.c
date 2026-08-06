@@ -5,7 +5,7 @@
 void _dummy(Window* win) {}
 
 void Window_draw(Window* win) {
-    if (!win->isopen || !win->draw_call) {
+    if (!win->isopen) {
         return;
     }
 
@@ -13,6 +13,7 @@ void Window_draw(Window* win) {
         DrawRectangle(win->x - 10, win->y, win->w + 20, win->h + 10, GRAY); // frame
         DrawRectangle(win->x - 10, win->y - 40, win->w + 20, 40, LIGHTGRAY); // top
 
+        DrawText(win->title, win->x, win->y - 30, 20, BLACK);
 
         if (GuiButton((Rectangle){win->x + win->w - 40, win->y - 40, 50, 40}, "x")) { // close button
             win->isopen = false;
@@ -39,10 +40,14 @@ void Window_draw(Window* win) {
         }
     }
 
-    win->draw_call(win);
-
     BeginTextureMode(win->fb);
     DrawLine(win->fb.texture.width, 0, win->fb.texture.width, win->fb.texture.height, BLACK);
     DrawLine(0, win->fb.texture.height, win->fb.texture.width, win->fb.texture.height, BLACK);
     EndTextureMode();
+
+    if (!win->draw_call) {
+        return;
+    }
+
+    win->draw_call(win);
 }
