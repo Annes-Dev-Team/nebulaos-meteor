@@ -9,7 +9,7 @@
 	<key>CFBundleVersion</key>
 	<string>0.3.0a1b1</string>
 	<key>UIRequiresPersistentWiFi</key>
-	<true/>
+	<false/>
 	<key>CFBundleDisplayName</key>
 	<string>NebulaOS Meteor</string>
 	<key>CFBundleIconFile</key>
@@ -22,5 +22,40 @@
 	<string>nebmeteor</string>
 	<key>CFBundleIdentifier</key>
 	<string>dev.annes.nbm</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>NebulaOS Program</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>dev.annes.nbm.program</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Shell</string>
+		</dict>
+	</array>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>dev.annes.nbm.program</string>
+			<key>UTTypeDescription</key>
+			<string>NebulaOS Program</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>neb</string>
+				</array>
+				<key>public.mime-type</key>
+				<string>application/x-nebos-program</string>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

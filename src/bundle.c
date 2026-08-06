@@ -59,7 +59,7 @@ const char* get_resource(const char *resource)
 }
 
 const char *get_save_path(void) {
-    return "filesystem.json";
+    return "nebfs.json";
 }
 
 #endif

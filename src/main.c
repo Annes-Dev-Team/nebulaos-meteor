@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -73,6 +74,11 @@ int main() {
         0x00,0x00,0x00,0xFF, // a
     };
 
+    FILE* f;
+    f = fopen(get_resource("program.neb"), "wb");
+    fwrite(rom, sizeof(uint8_t), sizeof(rom), f);
+    fclose(f);
+
     Program prg;
     Program_init(&prg);
 
@@ -98,8 +104,6 @@ int main() {
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
-
-        DrawText(Folder_get_absolute_path(get_folder_by_path("/poopy")), 0, 0, 20, BLACK);
 
         Window_draw(&settingswindow);
         Window_draw(&prg.win);
