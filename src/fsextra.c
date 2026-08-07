@@ -18,7 +18,7 @@ bool import_to_file(const char* realpath, const char* name, const char* ext) {
     rewind(fptr); 
 
     // alloc buffer
-    unsigned char *buffer = (unsigned char *)malloc(fileSize + 1);
+    unsigned char *buffer = (unsigned char *)malloc(fileSize );
     if (buffer == NULL) {
         printf("Failed to allocate %li chunks\n", fileSize+1);
         fclose(fptr);
@@ -34,6 +34,9 @@ bool import_to_file(const char* realpath, const char* name, const char* ext) {
     File *vfile = malloc(sizeof(File));
 
     vfile->contents = buffer;
+    vfile->name = malloc(strlen(name) + 1);
+    vfile->ext = malloc(strlen(ext) + 1);
+
     strcpy(vfile->name, name);
     strcpy(vfile->ext, ext);
     vfile->size = bytesRead;

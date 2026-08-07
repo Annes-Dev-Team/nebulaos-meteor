@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#pragma once
+
 void kernel_init();
 
 typedef struct Folder Folder;

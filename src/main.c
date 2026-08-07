@@ -11,6 +11,7 @@
 #include "nebin.h"
 #include "settings.h"
 #include "config.h"
+#include "fsextra.h"
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -24,6 +25,7 @@ int main() {
 
     load_fs();
 
+    /*
     uint8_t rom[] = {
 
         // OP_OSFLAG FLAG_WINW 640
@@ -72,18 +74,21 @@ int main() {
         0x00,0x00,0x00,0x00, // g
         0x00,0x00,0x00,0x00, // b
         0x00,0x00,0x00,0xFF, // a
-    };
+    };*/
+    import_to_file(get_resource("programs/test.neb"), "test", "neb");
+
+    uint8_t* rom = files[0]->contents;
 
     FILE* f;
     f = fopen(get_resource("program.neb"), "wb");
-    fwrite(rom, sizeof(uint8_t), sizeof(rom), f);
+    fwrite(rom, sizeof(uint8_t), files[0]->size, f);
     fclose(f);
 
     Program prg;
     Program_init(&prg);
 
     prg.rom = rom;
-    prg.rom_size = sizeof(rom);
+    prg.rom_size = files[0]->size;
 
     prg.win.isopen = true;
     prg.win.decorated = true;
