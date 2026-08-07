@@ -2,60 +2,97 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSMinimumSystemVersion</key>
-	<string>11.0.0</string>
-	<key>CFBundleShortVersionString</key>
-	<string>0.3.0ALPHA</string>
-	<key>CFBundleVersion</key>
-	<string>0.3.0a1</string>
-	<key>UIRequiresPersistentWiFi</key>
-	<false/>
-	<key>CFBundleDisplayName</key>
-	<string>NebulaOS Meteor</string>
-	<key>CFBundleIconFile</key>
-	<string>logo.icns</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © Annes&apos; Dev Team - MIT License</string>
-	<key>LSApplicationCategoryType</key>
-	<string>public.app-category.developer-tools</string>
-	<key>CFBundleExecutable</key>
-	<string>nebmeteor</string>
-	<key>CFBundleIdentifier</key>
-	<string>dev.annes.nbm</string>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>NebulaOS Program</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>dev.annes.nbm.program</string>
-			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Shell</string>
-		</dict>
-	</array>
-	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeIdentifier</key>
-			<string>dev.annes.nbm.program</string>
-			<key>UTTypeDescription</key>
-			<string>NebulaOS Program</string>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>public.data</string>
-			</array>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>neb</string>
-				</array>
-				<key>public.mime-type</key>
-				<string>application/x-nebos-program</string>
-			</dict>
-		</dict>
-	</array>
+
+    <key>CFBundleDisplayName</key>
+    <string>NebulaOS Meteor</string>
+
+    <key>CFBundleName</key>
+    <string>NebulaOS Meteor</string>
+
+    <key>CFBundleExecutable</key>
+    <string>nebmeteor</string>
+
+    <key>CFBundleIdentifier</key>
+    <string>dev.annes.nbm</string>
+
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>0.3.0ALPHA</string>
+
+    <key>CFBundleVersion</key>
+    <string>0.3.0a1</string>
+
+    <key>CFBundleIconFile</key>
+    <string>logo.icns</string>
+
+    <key>LSMinimumSystemVersion</key>
+    <string>11.0</string>
+
+    <key>LSApplicationCategoryType</key>
+    <string>public.app-category.developer-tools</string>
+
+    <key>NSHighResolutionCapable</key>
+    <true/>
+
+    <key>NSHumanReadableCopyright</key>
+    <string>Copyright © Annes' Dev Team - MIT License</string>
+
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>NebulaOS Program</string>
+
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+
+            <key>CFBundleTypeExtensions</key>
+            <array>
+                <string>neb</string>
+            </array>
+
+            <key>CFBundleTypeIconFile</key>
+            <string>nebprgfile.icns</string>
+        </dict>
+    </array>
+
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>dev.annes.nbm.program</string>
+
+            <key>UTTypeDescription</key>
+            <string>NebulaOS Program</string>
+
+            <key>UTTypeConformsTo</key>
+            <array>
+                <string>public.data</string>
+            </array>
+
+            <key>UTTypeIconFile</key>
+            <string>nebprgfile.icns</string>
+
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>neb</string>
+                </array>
+
+                <key>public.mime-type</key>
+                <string>application/x-nebos-program</string>
+            </dict>
+        </dict>
+    </array>
+
 </dict>
 </plist>
