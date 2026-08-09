@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -26,6 +27,13 @@ typedef struct {
 const char* File_get_absolute_path(File* file);
 void File_add(File* file);
 File* get_file_by_path(const char* path);
+
+typedef struct {
+    char* username;
+    char* displayname;
+    bool isadmin;
+
+} User;
 
 extern Folder** folders;
 extern File** files;
