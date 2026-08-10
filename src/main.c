@@ -12,6 +12,7 @@
 #include "settings.h"
 #include "config.h"
 #include "fsextra.h"
+#include "welcome.h"
 
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
@@ -19,8 +20,11 @@ int main() {
     SetTargetFPS(fps);
 
     kernel_init();
+
     init_bundle();
     init_settings();
+    init_welcome();
+
     HideCursor();
 
     load_fs();
@@ -40,7 +44,6 @@ int main() {
     prg.rom = rom;
     prg.rom_size = files[0]->size;
 
-    prg.win.isopen = true;
     prg.win.decorated = true;
     prg.win.allow_resizing=true;
 
@@ -66,6 +69,8 @@ int main() {
 
         Window_draw(&settingswindow);
         Window_draw(&prg.win);
+        draw_welcome();
+        
         draw_cursor();
         EndDrawing();
     }
