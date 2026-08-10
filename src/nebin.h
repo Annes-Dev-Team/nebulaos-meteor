@@ -40,7 +40,9 @@ typedef enum {
     OP_CIRCLE,
 
     OP_READFILE,
-    OP_SETARRAYINDEX
+    OP_SETARRAYINDEX,
+
+    OP_ADD
 } Opcodes;
 
 typedef enum {

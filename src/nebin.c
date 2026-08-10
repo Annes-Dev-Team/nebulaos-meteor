@@ -168,6 +168,16 @@ bool Program_step(Program *program) {
             break;
         }
 
+        case OP_READFILE: // RAF PATHREG REG
+
+            break;
+
+        case OP_SETARRAYINDEX: { // SAI ARREG INDEX VALREG
+            uint32_t valreg = read_u32(program);
+            
+            break;
+        }
+
         default:
             printf("Invalid instruction: %u\n", opcode);
             return false;
