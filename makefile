@@ -12,4 +12,3 @@ run: build
 	./NebulaOS\ Meteor.app/Contents/MacOS/nebmeteor | tee run.log
 	/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister \
 		-f ./NebulaOS\ Meteor.app
-	killall Finder

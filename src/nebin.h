@@ -42,7 +42,9 @@ typedef enum {
     OP_READFILE,
     OP_SETARRAYINDEX,
 
-    OP_ADD
+    OP_ADD,
+
+    OP_LOADSTR
 } Opcodes;
 
 typedef enum {

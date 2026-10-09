@@ -178,6 +178,22 @@ bool Program_step(Program *program) {
             break;
         }
 
+        case OP_LOADSTR: { // LOADSTR REG ADDRESS
+            if (val1 >= REG_COUNT) {
+                printf("Invalid register index.\n");
+                return false;
+            }
+
+            if (val2 >= program->rom_size) {
+                printf("Invalid string address: 0x%08X\n", val2);
+                return false;
+            }
+
+            program->regs[val1] = (void *)&program->rom[val2];
+
+            break;
+        }
+
         default:
             printf("Invalid instruction: %u\n", opcode);
             return false;
