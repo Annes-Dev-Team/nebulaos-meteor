@@ -18,6 +18,9 @@ typedef enum {
 
     REG_NEBOS_VERSION,
 
+    REG_KEYINPUT, // where keyboard input goes
+    REG_MOUSEINPUT, // where mouse input goes
+
     REG_FIRST_GENERAL
 } SpecialRegisters;
 
@@ -44,7 +47,20 @@ typedef enum {
 
     OP_ADD,
 
-    OP_LOADSTR
+    OP_LOADSTR,
+
+    OP_CMPE,
+    OP_CMPG,
+    OP_CMPGE,
+    OP_JE,
+    OP_JNE,
+
+    OP_SUB,
+    OP_MUL,
+    OP_DIV,
+
+    OP_RECTREG,
+    OP_CIRCREG
 } Opcodes;
 
 typedef enum {
@@ -65,6 +81,8 @@ typedef struct {
     uint32_t pc; // its unlikely anyone will make a binary bigger than 4 gigs
     void* regs[REG_COUNT]; // Regs 0-7 will be function arguments 8 will be nebos version.
     Window win;
+
+    bool iscmptrue; // kinda like ZERO FLAG on x86
 } Program;
 
 void Program_init(Program *program);

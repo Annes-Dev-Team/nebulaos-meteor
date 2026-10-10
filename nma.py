@@ -1,3 +1,4 @@
+
 import sys
 import struct
 
@@ -26,12 +27,27 @@ OPCODES = {
 
     "ADD": 14,
 
-    "LOADSTR": 15
-}
+    "LOADSTR": 15,
 
+    "CMPE":16,
+    "CMPG":17,
+    "CMPGE":18,
+    "JE":19,
+    "JNE":20,
+
+    "SUB":21,
+    "MUL":22,
+    "DIV":23,
+
+    "RECTREG":24,
+    "CIRCREG":25,
+}
 
 def u32(value):
     """Encode a 32-bit unsigned integer as big-endian."""
+    if not 0 <= value <= 0xFFFFFFFF:
+        raise ValueError(f"Value out of 32-bit range: {value}")
+
     return struct.pack(">I", value)
 
 
@@ -42,7 +58,6 @@ def number(value):
 
 def instruction_size(line):
     """Return the number of bytes an instruction produces."""
-
     parts = line.split()
     instruction = parts[0].upper()
 
@@ -56,13 +71,11 @@ def instruction_size(line):
 def parse_datstring(line):
     """
     Parse:
-
         DATSTRING NAME "Some string"
 
     Returns:
         name, string
     """
-
     parts = line.split(None, 2)
 
     if len(parts) != 3:
@@ -71,19 +84,33 @@ def parse_datstring(line):
             'DATSTRING TITLE "Neb Test Program"'
         )
 
-    name = parts[1]
-
+    name = parts[1].upper()
     string = parts[2]
 
     if len(string) < 2 or string[0] != '"' or string[-1] != '"':
         raise ValueError(
-            'DATSTRING string must be surrounded by quotes'
+            "DATSTRING string must be surrounded by quotes"
         )
 
-    # Remove quotes.
-    string = string[1:-1]
+    return name, string[1:-1]
 
-    return name, string
+
+def parse_jmppoint(line):
+    """
+    Parse:
+        JMPPOINT NAME
+
+    Returns:
+        name
+    """
+    parts = line.split()
+
+    if len(parts) != 2:
+        raise ValueError(
+            "JMPPOINT requires exactly one name"
+        )
+
+    return parts[1].upper()
 
 
 def strip_comment(line):
@@ -106,9 +133,16 @@ def assemble_instruction(line, labels):
     output.append(opcode)
 
     for arg in args:
-        # Is this a DATSTRING label?
-        if arg in labels:
-            value = labels[arg]
+        # Resolve DATSTRING labels and JMPPOINT labels.
+        name = arg.upper()
+
+        if name in labels:
+            value = labels[name]
+
+            if value is None:
+                raise ValueError(
+                    f"Unresolved label: {arg}"
+                )
         else:
             try:
                 value = number(arg)
@@ -125,115 +159,116 @@ def assemble_instruction(line, labels):
 def assemble(source):
     lines = source.splitlines()
 
+    labels = {}
+    pc = 0
+
     # ---------------------------------------------------------
     # PASS 1
     #
-    # Calculate where instructions and data will live.
+    # Calculate instruction addresses and register jump points.
+    # JMPPOINT does not generate any bytes.
     # ---------------------------------------------------------
 
-    labels = {}
-
-    pc = 0
-
     for line_number, raw_line in enumerate(lines, 1):
-
         line = strip_comment(raw_line)
 
         if not line:
             continue
 
         parts = line.split(None, 1)
-
         instruction = parts[0].upper()
 
-        if instruction == "DATSTRING":
-            try:
-                name, string = parse_datstring(line)
-            except ValueError as e:
-                raise ValueError(f"Line {line_number}: {e}")
-
-            if name in labels:
-                raise ValueError(
-                    f"Line {line_number}: Duplicate label '{name}'"
-                )
-
-            # The string itself will be appended after the code.
-            #
-            # We don't know its final address yet, so store the
-            # string for now.
-            labels[name] = None
-
-        else:
-            try:
-                pc += instruction_size(line)
-            except ValueError as e:
-                raise ValueError(f"Line {line_number}: {e}")
-
-    # ---------------------------------------------------------
-    # Calculate data addresses.
-    #
-    # Strings are placed immediately after the instruction code.
-    # ---------------------------------------------------------
-
-    code_size = pc
-
-    data_address = code_size
-    data = bytearray()
-
-    for line_number, raw_line in enumerate(lines, 1):
-
-        line = strip_comment(raw_line)
-
-        if not line:
-            continue
-
-        parts = line.split(None, 1)
-
-        if parts[0].upper() != "DATSTRING":
-            continue
-
         try:
-            name, string = parse_datstring(line)
+            if instruction == "JMPPOINT":
+                name = parse_jmppoint(line)
+
+                if name in labels:
+                    raise ValueError(
+                        f"Duplicate label '{name}'"
+                    )
+
+                # The jump target is the current code address.
+                labels[name] = pc
+
+            elif instruction == "DATSTRING":
+                name, _ = parse_datstring(line)
+
+                if name in labels:
+                    raise ValueError(
+                        f"Duplicate label '{name}'"
+                    )
+
+                # String addresses will be assigned after code sizing.
+                labels[name] = None
+
+            else:
+                pc += instruction_size(line)
+
         except ValueError as e:
             raise ValueError(f"Line {line_number}: {e}")
-
-        # Store the address of this string.
-        labels[name] = data_address
-
-        # UTF-8 string + NULL terminator.
-        encoded = string.encode("utf-8") + b"\0"
-
-        data += encoded
-        data_address += len(encoded)
 
     # ---------------------------------------------------------
     # PASS 2
     #
-    # Actually assemble the instructions.
+    # Place strings immediately after the instruction code.
+    # ---------------------------------------------------------
+
+    code_size = pc
+    data_address = code_size
+    data = bytearray()
+
+    for line_number, raw_line in enumerate(lines, 1):
+        line = strip_comment(raw_line)
+
+        if not line:
+            continue
+
+        if line.split(None, 1)[0].upper() != "DATSTRING":
+            continue
+
+        try:
+            name, string = parse_datstring(line)
+
+            encoded = string.encode("utf-8") + b"\0"
+
+            labels[name] = data_address
+
+            data.extend(encoded)
+            data_address += len(encoded)
+
+        except ValueError as e:
+            raise ValueError(f"Line {line_number}: {e}")
+
+    # ---------------------------------------------------------
+    # PASS 3
+    #
+    # Assemble instructions using the resolved addresses.
     # ---------------------------------------------------------
 
     output = bytearray()
 
     for line_number, raw_line in enumerate(lines, 1):
-
         line = strip_comment(raw_line)
 
         if not line:
             continue
 
-        if line.split(None, 1)[0].upper() == "DATSTRING":
+        instruction = line.split(None, 1)[0].upper()
+
+        # Directives generate no instruction bytes.
+        if instruction in ("DATSTRING", "JMPPOINT"):
             continue
 
         try:
-            output += assemble_instruction(line, labels)
+            output.extend(
+                assemble_instruction(line, labels)
+            )
+
         except ValueError as e:
             raise ValueError(f"Line {line_number}: {e}")
 
-    # ---------------------------------------------------------
-    # Append data section.
-    # ---------------------------------------------------------
-
-    output += data
+    # Append the null-terminated UTF-8 strings.
+    output.extend(data)
 
     return output
 
@@ -246,17 +281,18 @@ def main():
     input_file = sys.argv[1]
     output_file = sys.argv[2]
 
-    with open(input_file, "r", encoding="utf-8") as f:
-        source = f.read()
-
     try:
+        with open(input_file, "r", encoding="utf-8") as f:
+            source = f.read()
+
         binary = assemble(source)
-    except ValueError as e:
+
+        with open(output_file, "wb") as f:
+            f.write(binary)
+
+    except (ValueError, OSError) as e:
         print(f"Assembler error: {e}")
         sys.exit(1)
-
-    with open(output_file, "wb") as f:
-        f.write(binary)
 
     print(f"Assembled {len(binary)} bytes → {output_file}")
 

@@ -14,6 +14,8 @@
 #include "fsextra.h"
 #include "welcome.h"
 
+#define INSTRUCTIONS_PER_FRAME 20
+
 int main() {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(800, 600, "NebulaOS Meteor");
@@ -29,14 +31,9 @@ int main() {
 
     load_fs();
     
-    import_to_file(get_resource("programs/test.neb"), "test", "neb");
+    import_to_file(get_resource("programs/starcatcher.neb"), "test", "neb");
 
     uint8_t* rom = files[0]->contents;
-
-    FILE* f;
-    f = fopen(get_resource("program.neb"), "wb");
-    fwrite(rom, sizeof(uint8_t), files[0]->size, f);
-    fclose(f);
 
     Program prg;
     Program_init(&prg);
@@ -57,11 +54,15 @@ int main() {
     //UnloadImage(poopy);
 
     while (!WindowShouldClose()) {
-        if (Program_step(&prg)) {
-            printf("PC: %u\n", prg.pc);
-            printf("R1: %p\n", prg.regs[1]);
-            printf("RFIRST: %p\n", prg.regs[REG_FIRST_GENERAL]);
-            fflush(stdout);
+        for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
+            if (Program_step(&prg)) {
+                printf("PC: %u\n", prg.pc);
+                printf("RFIRST: %p\n", prg.regs[REG_FIRST_GENERAL]);
+                printf("R9: %p\n", prg.regs[REG_KEYINPUT]);
+                fflush(stdout);
+            } else {
+                break;
+            }
         }
 
         BeginDrawing();
@@ -69,7 +70,7 @@ int main() {
 
         Window_draw(&settingswindow);
         Window_draw(&prg.win);
-        draw_welcome();
+        //draw_welcome();
         
         draw_cursor();
         EndDrawing();
