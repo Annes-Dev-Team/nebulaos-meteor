@@ -93,7 +93,7 @@ bool Program_step(Program *program) {
             break;
         
         case OP_MOVI: // MOVI NUM REG
-            program->regs[val2] = (void*)val1;
+            program->regs[val1] = (void*)val2;
             break;
 
         case OP_MOVP: { // MOVP PTRVALHGH PTRVALLOW REG
@@ -302,17 +302,37 @@ bool Program_step(Program *program) {
             break;
         }
 
-        case OP_CIRCREG: {// CIRCREG X Y RAD R G B A
+        case OP_CIRCREG: {
+            // CIRCREG XREG YREG RADREG RREG GREG BREG AREG
             uint32_t rad = read_u32(program);
+            uint32_t r   = read_u32(program);
+            uint32_t g   = read_u32(program);
+            uint32_t b   = read_u32(program);
+            uint32_t a   = read_u32(program);
 
-            uint32_t r = read_u32(program);
-            uint32_t g = read_u32(program);
-            uint32_t b = read_u32(program);
-            uint32_t a = read_u32(program);
+            if (val1 >= REG_COUNT || val2 >= REG_COUNT ||
+                rad >= REG_COUNT || r >= REG_COUNT ||
+                g >= REG_COUNT || b >= REG_COUNT ||
+                a >= REG_COUNT) {
+                printf("CIRCREG: invalid register index\n");
+                return false;
+            }
+
+            int x = (int)(uintptr_t)program->regs[val1];
+            int y = (int)(uintptr_t)program->regs[val2];
+            float radius = (float)(uintptr_t)program->regs[rad];
+
+            Color color = {
+                (unsigned char)(uintptr_t)program->regs[r],
+                (unsigned char)(uintptr_t)program->regs[g],
+                (unsigned char)(uintptr_t)program->regs[b],
+                (unsigned char)(uintptr_t)program->regs[a]
+            };
 
             BeginTextureMode(program->win.fb);
-            DrawCircle((int)program->regs[val1], (int)program->regs[val2], (int)program->regs[rad], (Color){(int)program->regs[r],(int)program->regs[g],(int)program->regs[b],(int)program->regs[a]});
+            DrawCircle(x, y, radius, color);
             EndTextureMode();
+
             break;
         }
 

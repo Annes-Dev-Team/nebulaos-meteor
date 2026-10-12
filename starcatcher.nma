@@ -1,1 +1,75 @@
-DATSTRING TITLE "StarCatcher"
+; player x
+MOVI 100 100
+; player y
+MOVI 101 150
+
+; keyboard keys
+; right key
+MOVI 200 262
+; left key
+MOVI 201 263
+
+; 1
+MOVI 300 1
+
+; init window
+
+LOADSTR 500 TITLE
+
+OSFLAG 0 1
+OSFLAG 1 200
+OSFLAG 2 200
+OSFLAG 3 0
+OSFLAG 4 100
+OSFLAG 7 500
+
+INITBUF 200 200
+
+; end of main, to the loop!
+JMP LOOP 0
+
+JMPPOINT HALT
+JMP HALT 0
+
+DATSTRING TITLE "Star Catcher"
+
+; game loop
+
+JMPPOINT LOOP
+
+CMPE 9 200
+JE MOVERIGHT 0
+
+CMPE 9 201
+JE MOVELEFT 0
+
+JMPPOINT DRAW
+
+; clear screen
+
+RECTANGLE 0 0 200 200 0 0 0 255
+
+; draw the player
+
+; radius
+MOVI 0 20
+
+; color rgba
+MOVI 1 255
+MOVI 2 0
+MOVI 3 255
+MOVI 4 255
+
+CIRCREG 100 101 0 1 2 3 4
+
+JMP LOOP 0
+
+; left and right
+
+JMPPOINT MOVERIGHT
+ADD 100 300
+JMP DRAW 0 
+
+JMPPOINT MOVELEFT
+SUB 100 300
+JMP DRAW 0 
